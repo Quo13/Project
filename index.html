@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .opening-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1002;
+        }
+
+        .opening-screen h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .start-btn {
+            background-color: #e91e63;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #myVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        h1 {
+            color: #e91e63;
+            font-size: 2.5rem;
+        }
+
+        .heart {
+            color: #e91e63;
+            font-size: 100px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .button-container {
+            display: none;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            margin: 10px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .yes-btn {
+            background-color: #e91e63;
+            color: white;
+        }
+
+        .no-btn {
+            background-color: #9e9e9e;
+            color: white;
+        }
+
+        .cover-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            cursor: pointer;
+            z-index: 1001;
+            border-radius: 0;
+        }
+    </style>
+</head>
+<body>
+    <audio id="bgMusic" loop>
+        <source src="Fetty Wap  - Again [Audio Only].mp3" type="audio/mp3">
+    </audio>
+
+    <div class="opening-screen" id="openingScreen">
+        <h1>COMP ASSIGNMENT</h1>
+        <button id="startButton" class="start-btn">Click to Start </button>
+    </div>
+
+    <div class="video-container" id="videoContainer">
+        <video id="myVideo" autoplay muted>
+            <source src="minion2.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="heart">❤️</div>
+        <h1>Will You Be My Valentine?</h1>
+        <div id="buttons" class="button-container">
+            <button class="button yes-btn" onclick="sayYes()">Yes</button>
+            <button class="button no-btn" id="noBtn" onclick="handleNo()">No</button>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('myVideo');
+        const videoContainer = document.getElementById('videoContainer');
+        const mainContent = document.getElementById('mainContent');
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.querySelector('.yes-btn');
+        const bgMusic = document.getElementById('bgMusic');
+        const startButton = document.getElementById('startButton');
+        const buttonsContainer = document.getElementById('buttons');
+        const openingScreen = document.getElementById('openingScreen');
+
+        let noScale = 1;
+        let yesScale = 1;
+        let clickCount = 0;
+
+        const messages = [
+            "Try again stink 😝",
+            "Try again stink 😜",
+            "Nuh uh ",
+            "Wrong answer pookie 😞",
+            "Stop it you're scaring me",
+            "Are you sure :c"
+
+        ];
+
+        startButton.addEventListener('click', function() {
+            bgMusic.play().catch(error => {
+                console.log("Music playback failed. User interaction required.");
+            });
+            openingScreen.style.display = 'none';
+            mainContent.style.display = 'block';
+            buttonsContainer.style.display = 'block';
+            document.body.style.backgroundImage = "url('fatdog-dog.gif')"; // Add the dog GIF to the background
+            document.body.style.backgroundSize = "cover";
+            document.body.style.backgroundPosition = "center";
+            document.body.style.backgroundRepeat = "no-repeat";
+        });
+
+        function handleNo() {
+            clickCount++;
+            noScale = Math.max(0.3, noScale - 0.1);
+            noBtn.style.transform = `scale(${noScale})`;
+
+            yesScale = 1 + (clickCount / messages.length) * 10;
+            yesBtn.style.transform = `scale(${yesScale})`;
+
+            const message = messages[clickCount % messages.length];
+            noBtn.textContent = message;
+
+            if (clickCount >= messages.length) {
+                yesBtn.classList.add('cover-screen');
+                yesBtn.style.width = '100%';
+                yesBtn.style.height = '100%';
+                yesBtn.style.borderRadius = '0';
+                yesBtn.style.fontSize = '4rem';
+                noBtn.style.display = 'none';
+            }
+
+            if (noScale <= 0.3) {
+                noBtn.style.display = 'none';
+            }
+        }
+
+        function sayYes() {
+            mainContent.style.display = 'none';
+            videoContainer.style.display = 'flex';
+            video.play();
+        }
+
+        video.addEventListener('ended', function() {
+            video.currentTime = video.duration;
+        });
+    </script>
+</body>
+</html>
